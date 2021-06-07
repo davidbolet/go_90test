@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option go_package = "github.com/davidbolet/go_90test/proto";
+
+package proto;
+
+message Port {
+    string KEY = 1;
+    string Name = 2;
+    string City = 3;
+    string Country = 4;
+    repeated string Alias = 5;
+    repeated string Regions = 6;
+    repeated float Coordinates = 7;
+    string Province = 8;
+    string Timezone = 9;
+    repeated string Unlocs = 10;
+    string Code = 11;
+
+}
+
+message GetPortMsg {
+    string KEY = 1;
+}
+
+message DeletePortMsg {
+    string KEY = 1;
+}
+
+service PortDomainService {
+    rpc GetByKey(GetPortMsg) returns (Port);
+    rpc Save(Port) returns (Port);
+    rpc Delete(DeletePortMsg) returns (Port);
+}
