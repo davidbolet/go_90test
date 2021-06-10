@@ -1,0 +1,24 @@
+version: '3'
+services:
+  client-api:
+    depends_on:
+      - portdomain
+    networks:
+      - proto_network
+    expose:
+      - "8088"
+    build:
+      dockerfile: build/dockerfile_client_api
+      context: .
+    ports:
+      - "8088:8088"
+  portdomain:
+    build:
+      dockerfile: build/dockerfile_portdomain
+      context: .
+    networks:
+      proto_network:
+    expose:
+      - "9090"
+networks:
+  proto_network:

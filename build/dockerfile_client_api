@@ -1,0 +1,25 @@
+# Build for Client api
+ARG IMAGE_VERSION=1.16-stretch
+FROM golang:${IMAGE_VERSION} as build
+
+WORKDIR /
+
+COPY proto proto
+COPY client-api .
+COPY client-api/go.mod ./go.mod
+COPY . .
+# Download & cache dependencies
+RUN GOSUMDB=off go mod download
+
+RUN GOSUMDB=off go build ./cmd/main.go
+
+# Final Image
+FROM golang:${IMAGE_VERSION}
+
+EXPOSE 8088
+
+WORKDIR /app
+COPY --from=build /main .
+COPY --from=build /ports.json .
+
+CMD ["./main","ports.json","portdomain:9090"]

@@ -1,0 +1,24 @@
+# Build for Port Domain Service
+ARG IMAGE_VERSION=1.16-stretch
+FROM golang:${IMAGE_VERSION} as build
+
+WORKDIR /
+
+COPY proto proto
+COPY portdomsvc .
+COPY portdomsvc/go.mod ./go.mod
+COPY . .
+# Download & cache dependencies
+RUN GOSUMDB=off go mod download
+
+RUN GOSUMDB=off go build ./cmd/main.go
+
+# Final Image
+FROM golang:${IMAGE_VERSION}
+
+EXPOSE 9090
+
+WORKDIR /app
+COPY --from=build /main .
+
+CMD ["./main"]
